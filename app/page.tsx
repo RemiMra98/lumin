@@ -8,27 +8,14 @@ export default function LandingPage() {
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
-  const [scores, setScores] = useState<{ [key: string]: number }>({});
   const [submitted, setSubmitted] = useState(false);
 
   const tags = ['Design', 'Tech', 'Santé', 'Curiosité', 'Philo', 'Science', 'Art', 'Inspiration', 'Monde'];
 
   const toggleInterest = (tag: string) => {
-    setInterests((prev) => {
-      if (prev.includes(tag)) {
-        const updated = prev.filter((t) => t !== tag);
-        const { [tag]: _, ...rest } = scores;
-        setScores(rest);
-        return updated;
-      } else {
-        const updated = [...prev, tag];
-        setScores((prevScores) => ({
-          ...prevScores,
-          [tag]: (prevScores[tag] || 0) + 1,
-        }));
-        return updated;
-      }
-    });
+    setInterests((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
   };
 
   const handleNext = async (e: React.FormEvent) => {
@@ -40,7 +27,7 @@ export default function LandingPage() {
         await fetch("/api/subscribe", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, interests, scores }),
+          body: JSON.stringify({ email, interests }),
         });
         setSubmitted(true);
       } catch (error) {
@@ -88,7 +75,7 @@ export default function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4 }}
-              style={{ background: 'white' }}
+              style={{ background: "white" }}
               className="p-6 md:p-8 rounded-xl shadow-md space-y-6"
               layout
             >
