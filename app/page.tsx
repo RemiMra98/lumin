@@ -4,13 +4,11 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
-type ScoreMap = { [key: string]: number };
-
 export default function LandingPage() {
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
-  const [scores, setScores] = useState<ScoreMap>({});
+  const [scores, setScores] = useState<{ [key: string]: number }>({});
   const [submitted, setSubmitted] = useState(false);
 
   const tags = ['Design', 'Tech', 'Santé', 'Curiosité', 'Philo', 'Science', 'Art', 'Inspiration', 'Monde'];
@@ -90,7 +88,8 @@ export default function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4 }}
-              className="bg-white p-6 md:p-8 rounded-xl shadow-md space-y-6"
+              style={{ background: 'white' }}
+              className="p-6 md:p-8 rounded-xl shadow-md space-y-6"
               layout
             >
               <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
