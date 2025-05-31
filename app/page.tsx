@@ -10,8 +10,8 @@ export default function LandingPage() {
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
-  const [submitted, setSubmitted] = useState(false);
   const [scores, setScores] = useState<ScoreMap>({});
+  const [submitted, setSubmitted] = useState(false);
 
   const tags = ['Design', 'Tech', 'Santé', 'Curiosité', 'Philo', 'Science', 'Art', 'Inspiration', 'Monde'];
 
@@ -23,8 +23,12 @@ export default function LandingPage() {
         setScores(rest);
         return updated;
       } else {
-        setScores((prevScores) => ({ ...prevScores, [tag]: 1 }));
-        return [...prev, tag];
+        const updated = [...prev, tag];
+        setScores((prevScores) => ({
+          ...prevScores,
+          [tag]: (prevScores[tag] || 0) + 1,
+        }));
+        return updated;
       }
     });
   };
@@ -38,7 +42,7 @@ export default function LandingPage() {
         await fetch("/api/subscribe", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, interests }),
+          body: JSON.stringify({ email, interests, scores }),
         });
         setSubmitted(true);
       } catch (error) {
@@ -87,6 +91,7 @@ export default function LandingPage() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4 }}
               className="bg-white p-6 md:p-8 rounded-xl shadow-md space-y-6"
+              layout
             >
               <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
                 <div
