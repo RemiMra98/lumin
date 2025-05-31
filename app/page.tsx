@@ -1,21 +1,21 @@
 "use client";
 
-const [scores, setScores] = useState<Record<string, number>>({});
-
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
+type ScoreMap = { [key: string]: number };
+
 export default function LandingPage() {
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
-  const [interests, setInterests] = useState([]);
-  const [scores, setScores] = useState({});
+  const [interests, setInterests] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
+  const [scores, setScores] = useState<ScoreMap>({});
 
   const tags = ['Design', 'Tech', 'Santé', 'Curiosité', 'Philo', 'Science', 'Art', 'Inspiration', 'Monde'];
 
-  const toggleInterest = (tag) => {
+  const toggleInterest = (tag: string) => {
     setInterests((prev) => {
       if (prev.includes(tag)) {
         const updated = prev.filter((t) => t !== tag);
@@ -23,16 +23,13 @@ export default function LandingPage() {
         setScores(rest);
         return updated;
       } else {
-        setScores((prevScores) => ({
-          ...prevScores,
-          [tag]: (prevScores[tag] || 0) + 1
-        }));
+        setScores((prevScores) => ({ ...prevScores, [tag]: 1 }));
         return [...prev, tag];
       }
     });
   };
 
-  const handleNext = async (e) => {
+  const handleNext = async (e: React.FormEvent) => {
     e.preventDefault();
     if (step === 1 && email) {
       setStep(2);
@@ -41,7 +38,7 @@ export default function LandingPage() {
         await fetch("/api/subscribe", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, interests, scores }),
+          body: JSON.stringify({ email, interests }),
         });
         setSubmitted(true);
       } catch (error) {
@@ -70,6 +67,7 @@ export default function LandingPage() {
           Lumin vous envoie chaque semaine des pépites inattendues, mais pertinentes.
           Articles, idées, rencontres ou outils — pour nourrir l’esprit et déverrouiller de nouvelles perspectives.
         </p>
+
         <div className="mb-12">
           <Image
             src="/illustration-bridge-light.png"
@@ -79,6 +77,7 @@ export default function LandingPage() {
             className="mx-auto"
           />
         </div>
+
         <AnimatePresence mode="wait">
           {!submitted ? (
             <motion.div
@@ -94,6 +93,7 @@ export default function LandingPage() {
                   className={`h-full bg-yellow-300 transition-all duration-500 ${step === 1 ? "w-1/2" : "w-full"}`}
                 ></div>
               </div>
+
               {step === 1 && (
                 <form onSubmit={handleNext} className="flex flex-col sm:flex-row items-center justify-center gap-4">
                   <input
@@ -111,6 +111,7 @@ export default function LandingPage() {
                   </button>
                 </form>
               )}
+
               {step === 2 && (
                 <div>
                   <h2 className="text-lg font-medium mb-4">Choisissez vos centres d’intérêt :</h2>
@@ -154,7 +155,24 @@ export default function LandingPage() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        <section className="mt-20 text-left">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">Notre vision</h2>
+          <p className="text-gray-700 text-base md:text-lg mb-4">
+            Lumin est né d’une conviction : les algorithmes nous enferment dans ce que nous connaissons déjà.
+            Or, les grandes idées viennent souvent des rencontres fortuites, des croisements inattendus,
+            de ce qui ne ressemble pas à ce qu’on aurait cherché.
+          </p>
+          <p className="text-gray-700 text-base md:text-lg">
+            Lumin explore pour vous ces territoires mentaux à la frontière de vos intérêts. 
+            Pour que vous puissiez penser de travers, créer autrement, et cultiver votre curiosité comme une forme de liberté.
+          </p>
+        </section>
       </main>
+
+      <footer className="text-center py-10 text-sm text-gray-400">
+        © 2025 Lumin. Cultivez votre curiosité.
+      </footer>
     </div>
   );
 }
