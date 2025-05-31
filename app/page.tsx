@@ -1,6 +1,6 @@
-const [scores, setScores] = useState<Record<string, number>>({});
-
 "use client";
+
+const [scores, setScores] = useState<Record<string, number>>({});
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
