@@ -1,3 +1,5 @@
+const [scores, setScores] = useState<Record<string, number>>({});
+
 "use client";
 
 import { useState } from "react";
